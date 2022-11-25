@@ -19,11 +19,12 @@ var workonCmd = &cobra.Command{
 		fmt.Println("workon called")
 		fmt.Println(VerboseOut)
 
-		path, err := executor.Run("git", "rev-parse", "--show-toplevel")
+		path, err = executor.RunString("git rev-parse --show-toplevel")
 		if err != nil {
 			fmt.Println(err)
 		}
 		fmt.Println(path)
+
 	},
 }
 
