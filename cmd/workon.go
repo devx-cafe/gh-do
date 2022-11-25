@@ -6,11 +6,10 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/cli/go-gh"
+	"github.com/devx-cafe/gh-do/executor"
 	"github.com/devx-cafe/gh-do/options"
 	"github.com/devx-cafe/gh-do/utils"
 	"github.com/spf13/cobra"
@@ -42,21 +41,18 @@ var workonCmd = &cobra.Command{
 
 		client, _ := gh.RESTClient(nil)
 		repo, _ := gh.CurrentRepository()
+		issueID := args[0]
 
-		response := struct{ Title string }{}
-		err := client.Get(fmt.Sprintf("repos/%s/%s/issues/%s", repo.Owner(), repo.Name(), args[0]), &response)
+		issueResponse := struct{ Title string }{}
+		err := client.Get(fmt.Sprintf("repos/%s/%s/issues/%s", repo.Owner(), repo.Name(), issueID), &issueResponse)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		name := strings.Join(strings.Fields(strings.ToLower(response.Title)), "-")
+		branchName := utils.GetBranchName(issueResponse.Title, issueID)
 
-		m := regexp.MustCompile("![a-z0-9]")
-		mn := regexp.MustCompile("\\.")
-		cleanedName := m.ReplaceAllString(name, "")
-		cleanedName = mn.ReplaceAllString(cleanedName, "-")
+		executor.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
 
-		fmt.Println(fmt.Sprintf("%s-%s", args[0], cleanedName))
 	},
 }
 
