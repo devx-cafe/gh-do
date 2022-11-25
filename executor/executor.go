@@ -1,9 +1,11 @@
 package executor
 
 import (
+	"fmt"
 	"os/exec"
 	"strings"
-	"github.com/devx-cafe/gh-do/cmd"
+
+	"github.com/devx-cafe/gh-do/options"
 )
 
 // Run a terminal command
@@ -16,10 +18,12 @@ func Run(command string, args ...string) (string, error) {
 }
 
 func RunString(cmdstr string) (string, error) {
-  cmdargs := strings.Fields(cmdstr)
+	cmdargs := strings.Fields(cmdstr)
 	a, b := cmdargs[0], cmdargs[1:]
 
-//	if VerboseOut {fmt.Println(a, b...)}
+	if options.Verbose {
+		fmt.Println(cmdstr)
+	}
 	cmd := exec.Command(a, b...)
 	out, err := cmd.CombinedOutput()
 	return string(out), err

@@ -1,12 +1,13 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
+
 	"github.com/devx-cafe/gh-do/executor"
+	"github.com/devx-cafe/gh-do/options"
 	"github.com/spf13/cobra"
 )
 
@@ -14,10 +15,12 @@ import (
 var workonCmd = &cobra.Command{
 	Use:   "workon [issue]",
 	Short: "Create or resume a branch to work on an issue",
-  Long:"Creates a new local branch from the remote integration branch. If sucha a branch already exist it will resume work here with a simple checkout.",
+	Long:  "Creates a new local branch from the remote integration branch. If sucha a branch already exist it will resume work here with a simple checkout.",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("workon called")
-		fmt.Println(VerboseOut)
+
+		if options.Verbose {
+			fmt.Println("workon called")
+		}
 
 		path, err := executor.RunString("git rev-parse --show-toplevel")
 		if err != nil {
