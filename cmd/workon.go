@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Command library for workon
 // workonCmd represents the workon command
 var workonCmd = &cobra.Command{
 	Use:   "workon [issue]",
@@ -18,11 +19,16 @@ var workonCmd = &cobra.Command{
 	Long:  "Creates a new local branch from the remote integration branch. If sucha a branch already exist it will resume work here with a simple checkout.",
 	Run: func(cmd *cobra.Command, args []string) {
 
+		workoncmds := map[string]string{
+			"remoteOrigin": "git config --get remote.origin.url",
+			"gitRepo":      "git rev-parse --show-toplevel",
+		}
+
 		if options.Verbose {
 			fmt.Println("workon called")
 		}
 
-		path, err := executor.RunString("git rev-parse --show-toplevel")
+		path, err := executor.RunString(workoncmds["gitRepo"])
 		if err != nil {
 			fmt.Println(err)
 		}
