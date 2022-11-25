@@ -3,6 +3,7 @@ package executor
 import (
 	"os/exec"
 	"strings"
+	"github.com/devx-cafe/gh-do/cmd"
 )
 
 // Run a terminal command
@@ -16,10 +17,9 @@ func Run(command string, args ...string) (string, error) {
 
 func RunString(cmdstr string) (string, error) {
   cmdargs := strings.Fields(cmdstr)
-//	reg := []string {"a","b","c"}
-//	fmt.Println(strings.Join(strings.Fields(cmdstr), ","))
-//	reg := []string cmdargs
 	a, b := cmdargs[0], cmdargs[1:]
+
+//	if VerboseOut {fmt.Println(a, b...)}
 	cmd := exec.Command(a, b...)
 	out, err := cmd.CombinedOutput()
 	return string(out), err
