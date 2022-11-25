@@ -6,9 +6,11 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strconv"
+	"strings"
 
-	"github.com/devx-cafe/gh-do/executor"
+	"github.com/cli/go-gh"
 	"github.com/devx-cafe/gh-do/options"
 	"github.com/devx-cafe/gh-do/utils"
 	"github.com/spf13/cobra"
@@ -34,21 +36,27 @@ var workonCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 
-		workoncmds := map[string]string{
-			"remoteOrigin": "git config --get remote.origin.url",
-			"gitRepo":      "git rev-parse --show-toplevel",
-		}
-
 		if options.Verbose {
 			fmt.Println("workon called")
 		}
 
-		path, err := executor.RunString(workoncmds["gitRepo"])
+		client, _ := gh.RESTClient(nil)
+		repo, _ := gh.CurrentRepository()
+
+		response := struct{ Title string }{}
+		err := client.Get(fmt.Sprintf("repos/%s/%s/issues/%s", repo.Owner(), repo.Name(), args[0]), &response)
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
-		fmt.Println(path)
+		name := strings.Join(strings.Fields(strings.ToLower(response.Title)), "-")
 
+		m := regexp.MustCompile("![a-z0-9]")
+		mn := regexp.MustCompile("\\.")
+		cleanedName := m.ReplaceAllString(name, "")
+		cleanedName = mn.ReplaceAllString(cleanedName, "-")
+
+		fmt.Println(fmt.Sprintf("%s-%s", args[0], cleanedName))
 	},
 }
 
