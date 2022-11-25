@@ -1,4 +1,4 @@
-module github.com/lakruzz/gh-do
+module github.com/devx-cafe/gh-do
 
 go 1.19
 

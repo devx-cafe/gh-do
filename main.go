@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/lakruzz/gh-do/cmd"
+import "github.com/devx-cafe/gh-do/cmd"
 
 func main() {
 	cmd.Execute()
