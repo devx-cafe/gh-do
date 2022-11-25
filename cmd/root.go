@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/devx-cafe/gh-do/executor"
 	"github.com/devx-cafe/gh-do/options"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -36,8 +37,16 @@ examples and usage of using your application. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		// Must be inside a git repo
+		_, err := executor.RunString("git rev-parse --show-toplevel")
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Not inside a git repositry")
+			//os.Exit(1)
+		}
+	},
 	// Uncomment the following line if your bare application
-	// has an action associated with it:
+	// has an action associated with it:go
 	// Run: func(cmd *cobra.Command, args []string) { },
 }
 

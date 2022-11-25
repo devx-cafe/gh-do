@@ -25,7 +25,8 @@ var workonCmd = &cobra.Command{
 		_, err := strconv.Atoi(args[0])
 		if err != nil {
 			fmt.Println()
-			
+			os.Exit(1)
+
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
