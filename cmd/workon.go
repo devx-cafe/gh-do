@@ -5,6 +5,8 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 
 	"github.com/devx-cafe/gh-do/executor"
 	"github.com/devx-cafe/gh-do/options"
@@ -17,6 +19,15 @@ var workonCmd = &cobra.Command{
 	Use:   "workon [issue]",
 	Short: "Create or resume a branch to work on an issue",
 	Long:  "Creates a new local branch from the remote integration branch. If sucha a branch already exist it will resume work here with a simple checkout.",
+	Args:  cobra.MinimumNArgs(1),
+	PreRun: func(cmd *cobra.Command, args []string) {
+		// First argument must be an integer
+		_, err := strconv.Atoi(args[0])
+		if err != nil {
+			fmt.Println()
+			
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 
 		workoncmds := map[string]string{
