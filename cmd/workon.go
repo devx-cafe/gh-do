@@ -6,7 +6,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strconv"
 
 	"github.com/cli/go-gh"
 	"github.com/devx-cafe/gh-do/executor"
@@ -17,22 +16,23 @@ import (
 
 // Command library for workon
 // workonCmd represents the workon command
+// Use: `workon --new [-t,--title TITLE [--b,--body BODY ]]
+//
+//	workon ISSUE [--reopen]`,
 var workonCmd = &cobra.Command{
-	Use: `workon --new [-t,--title TITLE [--b,--body BODY ]]
-	workon ISSUE [--reopen]`,
+	Use:   `workon {--new| --reopen}`,
 	Short: "Create or resume a branch to work on an issue",
 	Long:  "Creates a new local branch from the remote integration branch. If sucha a branch already exist it will resume work here with a simple checkout.",
-	Args:  cobra.MinimumNArgs(1),
 	PreRun: func(cmd *cobra.Command, args []string) {
-		utils.ValidateGitRepo()
-
-		// First argument must be an integer
-		_, err := strconv.Atoi(args[0])
-		if err != nil {
-			fmt.Fprintln(os.Stderr, "Argument [issue] must be a number")
-			fmt.Println(cmd.Usage())
-			os.Exit(1)
-		}
+		//		utils.ValidateGitRepo()
+		//
+		//		// First argument must be an integer
+		//		_, err := strconv.Atoi(args[0])
+		//		if err != nil {
+		//			fmt.Fprintln(os.Stderr, "Argument [issue] must be a number")
+		//			fmt.Println(cmd.Usage())
+		//			os.Exit(1)
+		//		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -50,9 +50,16 @@ var workonCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
+
 		branchName := utils.GetBranchName(issueResponse.Title, issueID)
 
-		executor.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
+		out, err := executor.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
+		if err != nil {
+			fmt.Println(out)
+			fmt.Println(err.Error())
+			os.Exit(0)
+		}
+		fmt.Println(out)
 
 	},
 }
@@ -66,6 +73,9 @@ func init() {
 	// and all subcommands, e.g.:
 	// workonCmd.PersistentFlags().String("foo", "", "A help for foo")
 	workonCmd.PersistentFlags().BoolP("new", "n", false, "Create new issue on GitHub")
+	workonCmd.PersistentFlags().Bool("reopen", false, "Reopen closed issue")
+	workonCmd.PersistentFlags().StringP("title", "t", "", "Issue title")
+	workonCmd.PersistentFlags().StringP("body", "b", "", "Issue body")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
