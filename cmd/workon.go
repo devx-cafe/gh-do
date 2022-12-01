@@ -16,6 +16,7 @@ import (
 
 // Command library for workon
 // workonCmd represents the workon command
+<<<<<<< HEAD
 
 var workonCmd = &cobra.Command{
 	Use: `workon --new [--title TITLE [--body BODY ]]
@@ -34,6 +35,16 @@ var workonCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
+=======
+// Use: `workon --new [-t,--title TITLE [--b,--body BODY ]]
+//
+//	workon ISSUE [--reopen]`,
+var workonCmd = &cobra.Command{
+	Use:   `workon {--new| --reopen}`,
+	Short: "Create or resume a branch to work on an issue",
+	Long:  "Creates a new local branch from the remote integration branch. If sucha a branch already exist it will resume work here with a simple checkout.",
+	PreRun: func(cmd *cobra.Command, args []string) {
+>>>>>>> dcc8791 (sync against #19)
 		//		utils.ValidateGitRepo()
 		//
 		//		// First argument must be an integer
@@ -43,7 +54,10 @@ var workonCmd = &cobra.Command{
 		//			fmt.Println(cmd.Usage())
 		//			os.Exit(1)
 		//		}
+<<<<<<< HEAD
 
+=======
+>>>>>>> dcc8791 (sync against #19)
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(cmd.Flags())
@@ -74,7 +88,13 @@ var workonCmd = &cobra.Command{
 		}
 		fmt.Println(out)
 		shell.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
-
+		out, err := executor.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
+		if err != nil {
+			fmt.Println(out)
+			fmt.Println(err.Error())
+			os.Exit(0)
+		}
+		fmt.Println(out)
 	},
 }
 
