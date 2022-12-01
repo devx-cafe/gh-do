@@ -24,8 +24,6 @@ var workonCmd = &cobra.Command{
 	PreRun: func(cmd *cobra.Command, args []string) {
 		utils.ValidateGitRepo()
 
-		fmt.Println(args)
-
 		_, err := strconv.Atoi(args[0])
 		new := cmd.Flag("new").Changed
 		reopen := cmd.Flag("reopen").Changed
