@@ -49,22 +49,15 @@ var workonCmd = &cobra.Command{
 
 		shell.Vprint("workon called")
 
-		client, _ := gh.RESTClient(nil)
-		repo, _ := gh.CurrentRepository()
-		issueID := args[0] //TODO
-
-		issueResponse := struct{ Title string }{}
-		err := client.Get(fmt.Sprintf("repos/%s/%s/issues/%s", repo.Owner(), repo.Name(), issueID), &issueResponse)
-		if err != nil {
-			shell.DieGracefully(err)
+		switch {
+		case options.New:
+			WorkonNew(cmd, args)
+		case options.ReOpen:
+			WorkonReopenClosedIssue(cmd, args)
+		default:
+			WorkonOpenIssue(cmd, args)
 		}
 
-		branchName := utils.GetBranchName(issueResponse.Title, issueID)
-
-		out, err := shell.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
-		if err != nil {
-			shell.DieGracefully(out)
-		}
 	},
 }
 
@@ -84,4 +77,40 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// workonCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func WorkonNew(cmd *cobra.Command, args []string) {
+	shell.Vprint("Need to create new workflow")
+	shell.DieGracefully("Not yet implmented")
+}
+
+func WorkonReopenClosedIssue(cmd *cobra.Command, args []string) {
+
+}
+
+func WorkonOpenIssue(cmd *cobra.Command, args []string) {
+
+	issueID := args[0]
+	client, _ := gh.RESTClient(nil)
+	repo, _ := gh.CurrentRepository()
+
+	remoteBranches, branchErr := shell.RunString(fmt.Sprintf("git branch --remote --list *%s*", args[0]))
+	if branchErr != nil {
+		// Do something
+	}
+
+	fmt.Println(remoteBranches)
+
+	issueResponse := struct{ Title string }{}
+	err := client.Get(fmt.Sprintf("repos/%s/%s/issues/%s", repo.Owner(), repo.Name(), issueID), &issueResponse)
+	if err != nil {
+		shell.DieGracefully(err)
+	}
+
+	branchName := utils.GetBranchName(issueResponse.Title, issueID)
+
+	out, err := shell.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
+	if err != nil {
+		shell.DieGracefully(out)
+	}
 }
