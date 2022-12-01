@@ -24,11 +24,11 @@ var workonCmd = &cobra.Command{
 	PreRun: func(cmd *cobra.Command, args []string) {
 		utils.ValidateGitRepo()
 
-		_, err := strconv.Atoi(args[0])
 		new := cmd.Flag("new").Changed
 		reopen := cmd.Flag("reopen").Changed
 		title := cmd.Flag("title").Changed
 		body := cmd.Flag("body").Changed
+		argscount := len(args)
 
 		switch {
 		case new && reopen:
@@ -37,10 +37,13 @@ var workonCmd = &cobra.Command{
 			shell.DieGracefully("--title can only be used with --new")
 		case body && !new:
 			shell.DieGracefully("--body can only be used with --new")
-		case err != nil:
-			shell.DieGracefully("Argument ISSUE must be a number")
+		case new && argscount > 0:
+			shell.DieGracefully("--new does not take an ISSUE argument")
+		case argscount > 0:
+			if _, err := strconv.Atoi(args[0]); err != nil {
+				shell.DieGracefully("Argument ISSUE must be a number")
+			}
 		}
-
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 
