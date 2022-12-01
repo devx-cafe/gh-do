@@ -27,12 +27,11 @@ var workonCmd = &cobra.Command{
 
 		new := cmd.Flag("new").Changed
 		reopen := cmd.Flag("new").Changed
-		title := cmd.Flag("new").Changed
-		body := cmd.Flag("new").Changed
+		//	title := cmd.Flag("new").Changed
+		//	body := cmd.Flag("new").Changed
 
 		if new && reopen {
-			fmt.Println("--reopen and --new cannot be used simultaneously")
-			os.Exit(0)
+			shell.DieGracefully("--reopen and --new cannot be used simultaneously")
 		}
 
 =======
@@ -88,7 +87,7 @@ var workonCmd = &cobra.Command{
 		}
 		fmt.Println(out)
 		shell.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
-		out, err := executor.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
+		out, err := shell.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
 		if err != nil {
 			fmt.Println(out)
 			fmt.Println(err.Error())
