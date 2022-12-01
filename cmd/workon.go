@@ -20,10 +20,19 @@ import (
 //
 //	workon ISSUE [--reopen]`,
 var workonCmd = &cobra.Command{
-	Use:   `workon {--new| --reopen}`,
+	Use:   `workon --new | --reopen`,
 	Short: "Create or resume a branch to work on an issue",
 	Long:  "Creates a new local branch from the remote integration branch. If sucha a branch already exist it will resume work here with a simple checkout.",
 	PreRun: func(cmd *cobra.Command, args []string) {
+
+		switch {
+		case cmd.Flag("new"):
+			if cmd.Flag("reopen") {
+				fmt.Println("Can't use --new and --reopen together")
+				os.Exit(1)
+			}
+
+		}
 		//		utils.ValidateGitRepo()
 		//
 		//		// First argument must be an integer
@@ -33,6 +42,7 @@ var workonCmd = &cobra.Command{
 		//			fmt.Println(cmd.Usage())
 		//			os.Exit(1)
 		//		}
+
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 
