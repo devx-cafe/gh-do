@@ -30,6 +30,12 @@ func RunString(cmdstr string) (string, error) {
 	return string(out), err
 }
 
+func RunArray(cmdstr string) ([]string, error) {
+	out, err := RunString(cmdstr)
+	return strings.Split(string(out), "\n"), err
+
+}
+
 func DieGracefully(msg interface{}) {
 	fmt.Println(msg)
 	os.Exit(1)

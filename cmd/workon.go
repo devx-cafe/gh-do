@@ -94,9 +94,16 @@ func WorkonOpenIssue(cmd *cobra.Command, args []string) {
 	client, _ := gh.RESTClient(nil)
 	repo, _ := gh.CurrentRepository()
 
-	remoteBranches, branchErr := shell.RunString(fmt.Sprintf("git branch --remote --list *%s*", args[0]))
-	if branchErr != nil {
-		// Do something
+	remoteBranches, _ := shell.RunArray(fmt.Sprintf("git branch --remote --list *%s*", args[0]))
+	if len(remoteBranches) > 0 {
+		//Check if there are any local branches
+		shell.DieGracefully("Got remote branch")
+	} else {
+		// Pick up remote branh (potenitally)
+
+		shell.Vprint(remoteBranches)
+		shell.DieGracefully("Continue here")
+
 	}
 
 	fmt.Println(remoteBranches)
@@ -108,6 +115,8 @@ func WorkonOpenIssue(cmd *cobra.Command, args []string) {
 	}
 
 	branchName := utils.GetBranchName(issueResponse.Title, issueID)
+
+	shell.DieGracefully("Eject!")
 
 	out, err := shell.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
 	if err != nil {
