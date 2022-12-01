@@ -47,13 +47,11 @@ var workonCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 
-		if options.Verbose {
-			fmt.Println("workon called")
-		}
+		shell.Vprint("workon called")
 
 		client, _ := gh.RESTClient(nil)
 		repo, _ := gh.CurrentRepository()
-		issueID := args[0]
+		issueID := args[0] //TODO
 
 		issueResponse := struct{ Title string }{}
 		err := client.Get(fmt.Sprintf("repos/%s/%s/issues/%s", repo.Owner(), repo.Name(), issueID), &issueResponse)

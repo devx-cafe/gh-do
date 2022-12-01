@@ -34,3 +34,9 @@ func DieGracefully(msg interface{}) {
 	fmt.Println(msg)
 	os.Exit(1)
 }
+
+func Vprint(msg interface{}) {
+	if options.Verbose {
+		fmt.Println(msg)
+	}
+}
