@@ -18,7 +18,8 @@ import (
 // Command library for workon
 // workonCmd represents the workon command
 var workonCmd = &cobra.Command{
-	Use:   "workon [issue]",
+	Use: `workon --new [-t,--title TITLE [--b,--body BODY ]]
+	workon ISSUE [--reopen]`,
 	Short: "Create or resume a branch to work on an issue",
 	Long:  "Creates a new local branch from the remote integration branch. If sucha a branch already exist it will resume work here with a simple checkout.",
 	Args:  cobra.MinimumNArgs(1),
@@ -64,6 +65,7 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// workonCmd.PersistentFlags().String("foo", "", "A help for foo")
+	workonCmd.PersistentFlags().BoolP("new", "n", false, "Create new issue on GitHub")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
