@@ -9,8 +9,8 @@ import (
 	"strconv"
 
 	"github.com/cli/go-gh"
-	"github.com/devx-cafe/gh-do/executor"
 	"github.com/devx-cafe/gh-do/options"
+	"github.com/devx-cafe/gh-do/shell"
 	"github.com/devx-cafe/gh-do/utils"
 	"github.com/spf13/cobra"
 )
@@ -51,7 +51,7 @@ var workonCmd = &cobra.Command{
 		}
 		branchName := utils.GetBranchName(issueResponse.Title, issueID)
 
-		executor.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
+		shell.RunString(fmt.Sprintf("git checkout -b %s origin/master", branchName))
 
 	},
 }
