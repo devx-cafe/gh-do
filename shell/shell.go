@@ -1,7 +1,8 @@
-package executor
+package shell
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -27,4 +28,9 @@ func RunString(cmdstr string) (string, error) {
 	cmd := exec.Command(a, b...)
 	out, err := cmd.CombinedOutput()
 	return string(out), err
+}
+
+func DieGracefully(msg interface{}) {
+	fmt.Println(msg)
+	os.Exit(1)
 }
