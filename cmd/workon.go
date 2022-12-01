@@ -16,23 +16,24 @@ import (
 
 // Command library for workon
 // workonCmd represents the workon command
-// Use: `workon --new [-t,--title TITLE [--b,--body BODY ]]
-//
-//	workon ISSUE [--reopen]`,
+
 var workonCmd = &cobra.Command{
-	Use:   `workon --new | --reopen`,
+	Use: `workon --new [--title TITLE [--body BODY ]]
+	workon ISSUE [--reopen]`,
 	Short: "Create or resume a branch to work on an issue",
 	Long:  "Creates a new local branch from the remote integration branch. If sucha a branch already exist it will resume work here with a simple checkout.",
 	PreRun: func(cmd *cobra.Command, args []string) {
 
-		switch {
-		case cmd.Flag("new"):
-			if cmd.Flag("reopen") {
-				fmt.Println("Can't use --new and --reopen together")
-				os.Exit(1)
-			}
+		new := cmd.Flag("new").Changed
+		reopen := cmd.Flag("new").Changed
+		title := cmd.Flag("new").Changed
+		body := cmd.Flag("new").Changed
 
+		if new && reopen {
+			fmt.Println("--reopen and --new cannot be used simultaneously")
+			os.Exit(0)
 		}
+
 		//		utils.ValidateGitRepo()
 		//
 		//		// First argument must be an integer
@@ -45,7 +46,9 @@ var workonCmd = &cobra.Command{
 
 	},
 	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println(cmd.Flags())
 
+		cmd.Flags().Lookup("new")
 		if options.Verbose {
 			fmt.Println("workon called")
 		}
@@ -82,10 +85,10 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// workonCmd.PersistentFlags().String("foo", "", "A help for foo")
-	workonCmd.PersistentFlags().BoolP("new", "n", false, "Create new issue on GitHub")
-	workonCmd.PersistentFlags().Bool("reopen", false, "Reopen closed issue")
-	workonCmd.PersistentFlags().StringP("title", "t", "", "Issue title")
-	workonCmd.PersistentFlags().StringP("body", "b", "", "Issue body")
+	workonCmd.PersistentFlags().BoolVarP(&options.New, "new", "n", false, "Create new issue on GitHub")
+	workonCmd.PersistentFlags().BoolVar(&options.ReOpen, "reopen", false, "Reopen closed issue")
+	workonCmd.PersistentFlags().StringVarP(&options.Title, "title", "t", "", "Issue title")
+	workonCmd.PersistentFlags().StringVarP(&options.Body, "body", "b", "", "Issue body")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

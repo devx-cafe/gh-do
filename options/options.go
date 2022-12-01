@@ -9,4 +9,12 @@ var (
 	Verbose = false
 
 	DryRun = false
+
+	New = false
+
+	Title = ""
+
+	Body = ""
+
+	ReOpen = false
 )
